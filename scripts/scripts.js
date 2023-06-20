@@ -51,6 +51,7 @@ function buildAutoBlocks(main) {
 export function decorateMain(main) {
   // hopefully forward compatible button decoration
   decorateButtons(main);
+  decorateRating(main);
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
@@ -115,11 +116,55 @@ async function loadLazy(doc) {
  * Loads everything that happens a lot later,
  * without impacting the user experience.
  */
+
+
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
+  console.log('manisha1');
+  console.log(document);
+  addScript('https://www.googletagmanager.com/gtag/js?id=G-KL8QQN67BV');
+  const data = `window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                   gtag('config', 'G-KL8QQN67BV');`
+
+  addScript('',data);
+  window.handleChange = function(myRadio){
+                             console.log('manisha---');
+                             if(typeof (gtag) === 'function'){
+                             gtag('set',{'rating':myRadio && myRadio.getAttribute('href')});
+                             }
+                         }
 }
+
+function decorateRating(element){
+    element.querySelectorAll('a').forEach((a) => {
+        a.href = a.href || a.textContent;
+        //if(typeof (handleChange) === 'function'){
+            a.setAttribute("onclick","handleChange(event)");
+            //a.addEventListener('click',handleChange(event));
+            console.log(event);
+        //}
+        });
+
+
+}
+
+
+
+
+
+function addScript( src , data) {
+  var s = document.createElement( 'script' );
+  s.setAttribute( 'src', src );
+  s.setAttribute( 'async', true );
+  data && s.append(data);
+  document.body.appendChild( s );
+}
+
+
 
 async function loadPage() {
   await loadEager(document);
